@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Order Confirmed — Spice Garden</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-cream">
+
+<!-- ═══════════════════════════════════════════
+     CONFIRMATION PAGE
+════════════════════════════════════════════ -->
+<main class="min-h-screen flex flex-col items-center justify-start px-4 pt-10 pb-24 max-w-xl mx-auto">
+
+  <!-- Success animation -->
+  <div class="success-circle mb-4">
+    <span class="success-check">✅</span>
+  </div>
+
+  <h1 class="font-playfair font-bold text-2xl text-center mb-1" style="color:#1A1A1A">Order Confirmed!</h1>
+  <p class="text-gray-400 text-sm text-center mb-6">Thank you! Your food is being prepared 🍳</p>
+
+  <!-- Order ID card -->
+  <div class="bg-white rounded-2xl shadow-sm p-5 w-full mb-4">
+    <div class="flex items-center justify-between mb-3">
+      <p class="text-sm font-semibold text-gray-500">Order ID</p>
+      <p class="font-bold text-base" style="color:#D4A853" id="conf-order-id">—</p>
+    </div>
+    <div class="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+      <p class="text-sm text-gray-500">Estimated delivery</p>
+      <p class="font-bold text-sm" id="conf-eta">~30 mins</p>
+    </div>
+    <!-- Live tracker -->
+    <div class="space-y-3" id="status-tracker">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background:#D1FAE5">✅</div>
+        <div class="flex-1">
+          <p class="text-xs font-semibold text-green-600">Order Placed</p>
+          <p class="text-xs text-gray-400">We received your order</p>
+        </div>
+      </div>
+      <div class="ml-3.5 w-px h-5 bg-gray-200"></div>
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style="background:#DBEAFE">👨‍🍳</div>
+        <div class="flex-1">
+          <p class="text-xs font-semibold" style="color:#1A1A1A">Preparing Order</p>
+          <p class="text-xs text-gray-400">Chef is cooking for you</p>
+        </div>
+      </div>
+      <div class="ml-3.5 w-px h-5 bg-gray-200"></div>
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-100">🛵</div>
+        <div class="flex-1">
+          <p class="text-xs font-semibold text-gray-400">Out for delivery</p>
+          <p class="text-xs text-gray-300">On the way to you</p>
+        </div>
+      </div>
+      <div class="ml-3.5 w-px h-5 bg-gray-200"></div>
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 bg-gray-100">🏠</div>
+        <div class="flex-1">
+          <p class="text-xs font-semibold text-gray-400">Delivered</p>
+          <p class="text-xs text-gray-300">Enjoy your meal!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ordered items -->
+  <div class="bg-white rounded-2xl shadow-sm p-5 w-full mb-4">
+    <h3 class="font-semibold mb-3 text-sm" style="color:#1A1A1A">Your Order</h3>
+    <div id="conf-items" class="space-y-3"><!-- populated --></div>
+    <div class="border-t border-gray-100 mt-3 pt-3 space-y-1">
+      <div class="flex justify-between text-xs text-gray-500">
+        <span>Subtotal</span>
+        <span id="conf-subtotal">₹0</span>
+      </div>
+      <div class="flex justify-between text-xs text-gray-500">
+        <span>Delivery</span>
+        <span id="conf-delivery">₹0</span>
+      </div>
+      <div class="flex justify-between text-sm font-bold mt-1">
+        <span>Total Paid</span>
+        <span style="color:#D4A853" id="conf-total">₹0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery address -->
+  <div class="bg-white rounded-2xl shadow-sm p-5 w-full mb-4">
+    <h3 class="font-semibold mb-2 text-sm" style="color:#1A1A1A">Delivering to</h3>
+    <p class="font-semibold text-sm" id="conf-name">—</p>
+    <p class="text-xs text-gray-500 mt-0.5" id="conf-address">—</p>
+    <p class="text-xs text-gray-500" id="conf-mobile">—</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-col gap-3 w-full">
+    <a href="index.html" class="btn-gold w-full py-4 text-center text-base block">
+      🍽 Order More Food
+    </a>
+    <a href="admin.html" class="btn-outline-gold w-full py-3.5 text-center text-sm block">
+      📋 Track Order Status
+    </a>
+  </div>
+
+  <!-- Fun message -->
+  <div class="mt-8 text-center">
+    <p class="text-4xl mb-2">🎉</p>
+    <p class="text-sm text-gray-400">Your food will arrive piping hot!</p>
+    <p class="text-xs text-gray-300 mt-1">Rate your experience after delivery</p>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div id="toast-container"></div>
+
+<script src="app.js"></script>
+<script>
+  Auth.requireAuth();
+
+  // Get order from URL param or latest
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order');
+  const order = orderId ? Orders.getById(orderId) : Orders.getLatest();
+
+  if (!order) {
+    window.location.href = 'index.html';
+  } else {
+    document.getElementById('conf-order-id').textContent = order.id;
+    document.getElementById('conf-eta').textContent = `~${order.estimatedMinutes} mins`;
+
+    // Items
+    document.getElementById('conf-items').innerHTML = order.items.map(item => `
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">${item.emoji}</span>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium truncate">${item.name}</p>
+          <p class="text-xs text-gray-400">× ${item.qty}</p>
+        </div>
+        <p class="font-semibold text-sm">₹${item.price * item.qty}</p>
+      </div>`).join('');
+
+    // Bill
+    document.getElementById('conf-subtotal').textContent = `₹${order.subtotal}`;
+    document.getElementById('conf-delivery').textContent  = order.deliveryCharge === 0 ? 'FREE' : `₹${order.deliveryCharge}`;
+    document.getElementById('conf-total').textContent     = `₹${order.total}`;
+
+    // Customer
+    document.getElementById('conf-name').textContent    = order.customer?.name    || '—';
+    document.getElementById('conf-address').textContent = order.customer?.address || '—';
+    document.getElementById('conf-mobile').textContent  = '+91 ' + (order.customer?.mobile || '—');
+
+    // Simulate order progression
+    let stage = 1; // 0=placed,1=preparing,2=out,3=delivered
+    const steps = document.querySelectorAll('#status-tracker > .flex.items-center');
+    function advanceStage() {
+      if (stage >= steps.length) return;
+      const stepEl = steps[stage];
+      const icon = stepEl.querySelector('.w-7');
+      const title = stepEl.querySelector('.text-xs.font-semibold');
+      const sub   = stepEl.querySelector('.text-xs.text-gray-400, .text-xs.text-gray-300');
+      icon.style.background = '#D1FAE5';
+      icon.textContent = '✅';
+      if (title)  { title.style.color  = '#16a34a'; }
+      if (sub)    { sub.className = 'text-xs text-gray-400'; }
+      stage++;
+      if (stage === 2) {
+        Orders.updateStatus(order.id, 'preparing');
+        Toast.show('🍳 Your order is being prepared!', 'gold', 3000);
+      } else if (stage === 3) {
+        Orders.updateStatus(order.id, 'ready');
+        Toast.show('🛵 Your order is out for delivery!', 'success', 3000);
+      }
+      if (stage < steps.length) setTimeout(advanceStage, 12000);
+    }
+    setTimeout(advanceStage, 4000);
+  }
+</script>
+</body>
+</html>

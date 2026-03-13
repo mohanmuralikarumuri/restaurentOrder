@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Checkout — Spice Garden</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-cream pb-safe">
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="flex items-center gap-3 px-4 py-3">
+    <a href="cart.html" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+    </a>
+    <div>
+      <h1 class="font-semibold text-base" style="color:#1A1A1A">Checkout</h1>
+      <p class="text-xs text-gray-400">Almost there!</p>
+    </div>
+  </div>
+  <!-- Progress bar -->
+  <div class="h-1 bg-gray-100 mx-4 mb-2 rounded-full overflow-hidden">
+    <div class="h-full rounded-full transition-all duration-500" style="background:#D4A853;width:80%"></div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     MAIN FORM
+════════════════════════════════════════════ -->
+<main class="px-4 py-4 max-w-xl mx-auto page-enter" style="padding-bottom:130px">
+
+  <!-- ─ Delivery Details ─ -->
+  <div class="bg-white rounded-2xl shadow-sm p-5 mb-4">
+    <h3 class="font-semibold mb-4 flex items-center gap-2" style="color:#1A1A1A">
+      <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:#D4A853">1</span>
+      Delivery Details
+    </h3>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1.5">Full Name *</label>
+        <input id="f-name" type="text" placeholder="Enter your full name" class="input-field"
+               oninput="clearFieldErr('f-name')" />
+        <p id="err-name" class="text-red-500 text-xs mt-1 hidden"></p>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1.5">Mobile Number *</label>
+        <div class="flex gap-2">
+          <div class="flex items-center px-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm text-gray-600 font-medium flex-shrink-0">
+            🇮🇳 +91
+          </div>
+          <input id="f-mobile" type="tel" maxlength="10" inputmode="numeric"
+                 placeholder="10-digit number" class="input-field flex-1"
+                 oninput="clearFieldErr('f-mobile')" />
+        </div>
+        <p id="err-mobile" class="text-red-500 text-xs mt-1 hidden"></p>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1.5">Delivery Address *</label>
+        <textarea id="f-address" rows="3" placeholder="House no., street, area, city…"
+                  class="input-field resize-none"
+                  oninput="clearFieldErr('f-address')"></textarea>
+        <p id="err-address" class="text-red-500 text-xs mt-1 hidden"></p>
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1.5">Landmark (optional)</label>
+        <input id="f-landmark" type="text" placeholder="E.g. Near City Mall" class="input-field" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ Payment Method ─ -->
+  <div class="bg-white rounded-2xl shadow-sm p-5 mb-4">
+    <h3 class="font-semibold mb-4 flex items-center gap-2" style="color:#1A1A1A">
+      <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:#D4A853">2</span>
+      Payment Method
+    </h3>
+    <div class="space-y-3" id="payment-options">
+      <label class="payment-card selected cursor-pointer flex items-center gap-3" data-method="cod">
+        <input type="radio" name="payment" value="cod" checked class="hidden" />
+        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-xl flex-shrink-0">💵</div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm">Cash on Delivery</p>
+          <p class="text-xs text-gray-400">Pay when order arrives</p>
+        </div>
+        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" style="border-color:#D4A853">
+          <div class="w-2.5 h-2.5 rounded-full" style="background:#D4A853" id="radio-dot-cod"></div>
+        </div>
+      </label>
+
+      <label class="payment-card cursor-pointer flex items-center gap-3" data-method="upi">
+        <input type="radio" name="payment" value="upi" class="hidden" />
+        <div class="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-xl flex-shrink-0">📲</div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm">UPI Payment</p>
+          <p class="text-xs text-gray-400">PhonePe, GPay, Paytm</p>
+        </div>
+        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 border-gray-300">
+          <div class="w-2.5 h-2.5 rounded-full hidden" id="radio-dot-upi"></div>
+        </div>
+      </label>
+
+      <label class="payment-card cursor-pointer flex items-center gap-3" data-method="card">
+        <input type="radio" name="payment" value="card" class="hidden" />
+        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-xl flex-shrink-0">💳</div>
+        <div class="flex-1">
+          <p class="font-semibold text-sm">Credit / Debit Card</p>
+          <p class="text-xs text-gray-400">Visa, Mastercard, RuPay</p>
+        </div>
+        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 border-gray-300">
+          <div class="w-2.5 h-2.5 rounded-full hidden" id="radio-dot-card"></div>
+        </div>
+      </label>
+    </div>
+    <p id="err-payment" class="text-red-500 text-xs mt-2 hidden">Please select a payment method</p>
+  </div>
+
+  <!-- ─ Order Summary ─ -->
+  <div class="bg-white rounded-2xl shadow-sm p-5 mb-4">
+    <h3 class="font-semibold mb-3 flex items-center gap-2" style="color:#1A1A1A">
+      <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:#D4A853">3</span>
+      Order Summary
+    </h3>
+    <div id="checkout-order-summary">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- ─ UPI Dialog (demo) ─ -->
+  <div id="upi-section" class="hidden bg-white rounded-2xl shadow-sm p-5 mb-4">
+    <h4 class="font-semibold text-sm mb-3" style="color:#1A1A1A">Enter UPI ID</h4>
+    <input id="upi-id" type="text" placeholder="yourname@upi" class="input-field mb-2" />
+    <p class="text-xs text-gray-400">This is a demo — no actual payment will be made.</p>
+  </div>
+
+  <!-- ─ Card Dialog (demo) ─ -->
+  <div id="card-section" class="hidden bg-white rounded-2xl shadow-sm p-5 mb-4">
+    <h4 class="font-semibold text-sm mb-3" style="color:#1A1A1A">Card Details (Demo)</h4>
+    <input type="text" placeholder="Card Number" class="input-field mb-3" maxlength="19" />
+    <div class="flex gap-3">
+      <input type="text" placeholder="MM/YY" class="input-field" maxlength="5" />
+      <input type="text" placeholder="CVV" class="input-field" maxlength="3" />
+    </div>
+    <p class="text-xs text-gray-400 mt-2">This is a demo — no actual payment will be made.</p>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════
+     PLACE ORDER FOOTER
+════════════════════════════════════════════ -->
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-4 z-50 shadow-lg max-w-xl mx-auto">
+  <div class="flex items-center justify-between mb-3">
+    <div>
+      <p class="text-xs text-gray-400">You pay</p>
+      <p class="font-bold text-xl" style="color:#D4A853" id="pay-total">₹0</p>
+    </div>
+    <div class="text-right">
+      <p class="text-xs text-gray-400">Delivery by</p>
+      <p class="font-semibold text-sm">~30 mins 🕐</p>
+    </div>
+  </div>
+  <button class="btn-gold w-full py-4 text-base" id="place-order-btn" onclick="placeOrder()">
+    🍽 Place Order
+  </button>
+</div>
+
+<!-- ─ Processing overlay ─ -->
+<div id="processing-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center" style="background:rgba(255,255,255,0.95)">
+  <div class="spinner" style="width:48px;height:48px;border-width:4px"></div>
+  <p class="font-semibold text-lg mt-5" style="color:#1A1A1A">Placing your order…</p>
+  <p class="text-sm text-gray-400 mt-1">Please don't go back</p>
+</div>
+
+<!-- Toast -->
+<div id="toast-container"></div>
+
+<script src="app.js"></script>
+<script>
+  Auth.requireAuth();
+
+  // If cart is empty, redirect
+  if (Cart.getCount() === 0) {
+    window.location.href = 'index.html';
+  }
+
+  // Render order summary
+  renderCheckoutSummary();
+
+  // Pay total
+  (function updatePayTotal() {
+    const tax   = Math.round(Cart.getSubtotal() * 0.05);
+    const total = Cart.getTotal() + tax;
+    document.getElementById('pay-total').textContent = `₹${total}`;
+  })();
+
+  // Pre-fill from session
+  (function prefill() {
+    const session = Auth.getSession();
+    if (!session) return;
+    if (session.method === 'mobile') {
+      document.getElementById('f-mobile').value = session.identifier.replace('+91', '');
+    } else if (session.method === 'email') {
+      // name might be available from previous orders
+    }
+    const lastAddr = localStorage.getItem('spiceGarden_lastAddress');
+    if (lastAddr) {
+      try {
+        const a = JSON.parse(lastAddr);
+        if (a.name)     document.getElementById('f-name').value     = a.name;
+        if (a.mobile)   document.getElementById('f-mobile').value   = a.mobile;
+        if (a.address)  document.getElementById('f-address').value  = a.address;
+        if (a.landmark) document.getElementById('f-landmark').value = a.landmark;
+      } catch {}
+    }
+  })();
+
+  // Payment method selection
+  document.querySelectorAll('#payment-options label').forEach(card => {
+    card.addEventListener('click', () => {
+      const method = card.dataset.method;
+
+      // Update UI
+      document.querySelectorAll('#payment-options label').forEach(c => {
+        c.classList.remove('selected');
+        const dot = c.querySelector('[id^="radio-dot"]');
+        if (dot) { dot.classList.add('hidden'); c.querySelector('.rounded-full.border-2').style.borderColor = '#D1D5DB'; }
+      });
+      card.classList.add('selected');
+      const selDot = document.getElementById(`radio-dot-${method}`);
+      if (selDot) {
+        selDot.classList.remove('hidden');
+        selDot.style.background = '#D4A853';
+        card.querySelector('.rounded-full.border-2').style.borderColor = '#D4A853';
+      }
+      card.querySelector('input[type=radio]').checked = true;
+
+      // Show extra fields
+      document.getElementById('upi-section').classList.toggle('hidden',  method !== 'upi');
+      document.getElementById('card-section').classList.toggle('hidden', method !== 'card');
+    });
+  });
+
+  // ── PLACE ORDER ──
+  function placeOrder() {
+    const name    = document.getElementById('f-name').value.trim();
+    const mobile  = document.getElementById('f-mobile').value.trim();
+    const address = document.getElementById('f-address').value.trim();
+    const method  = document.querySelector('input[name="payment"]:checked')?.value || '';
+    let valid = true;
+
+    if (!Validate.name(name)) {
+      showFieldErr('err-name', 'Please enter your full name');
+      valid = false;
+    }
+    if (!Validate.mobile(mobile)) {
+      showFieldErr('err-mobile', 'Please enter a valid 10-digit mobile number');
+      valid = false;
+    }
+    if (address.length < 10) {
+      showFieldErr('err-address', 'Please enter a complete delivery address');
+      valid = false;
+    }
+    if (!method) {
+      showFieldErr('err-payment', 'Please select a payment method');
+      valid = false;
+    }
+    if (!valid) return;
+
+    // Save address for next time
+    localStorage.setItem('spiceGarden_lastAddress', JSON.stringify({ name, mobile, address, landmark: document.getElementById('f-landmark').value.trim() }));
+
+    // Show processing
+    document.getElementById('processing-overlay').classList.remove('hidden');
+
+    // Simulate processing time
+    const delay = method === 'cod' ? 1200 : 2200;
+    setTimeout(() => {
+      const customer = { name, mobile, address, landmark: document.getElementById('f-landmark').value.trim() };
+      const order = Orders.place(customer, method);
+
+      window.location.href = `confirmation.html?order=${order.id}`;
+    }, delay);
+  }
+
+  // ── Helpers ──
+  function showFieldErr(id, msg) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+  }
+  function clearFieldErr(inputId) {
+    // Map input id to error id
+    const map = { 'f-name': 'err-name', 'f-mobile': 'err-mobile', 'f-address': 'err-address' };
+    const errId = map[inputId];
+    if (errId) {
+      const el = document.getElementById(errId);
+      if (el) el.classList.add('hidden');
+    }
+  }
+</script>
+</body>
+</html>

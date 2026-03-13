@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Spice Garden — Authentic Indian Cuisine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-cream pb-safe">
+
+<!-- ═══════════════════════════════════════════
+     STICKY HEADER
+════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="flex items-center justify-between px-4 py-3">
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center text-xl flex-shrink-0"
+           style="background:linear-gradient(135deg,#D4A853,#F0C97A)">🍛</div>
+      <div>
+        <h1 class="font-playfair font-bold text-base leading-tight" style="color:#1A1A1A">Spice Garden</h1>
+        <p class="text-xs text-gray-400" style="margin-top:-1px">
+          <span class="text-green-500">●</span> Open now · 4.8 ★
+        </p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <!-- Search toggle -->
+      <button onclick="toggleSearch()" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+
+      <!-- Cart -->
+      <button onclick="openSheet('cart-sheet','cart-overlay')" class="relative w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 transition hover:bg-gray-200 cart-icon-target">
+        <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+        <span class="cart-count cart-badge" style="display:none">0</span>
+      </button>
+
+      <!-- Profile -->
+      <button onclick="toggleProfileMenu()" class="w-9 h-9 flex items-center justify-center rounded-full text-white font-bold text-sm flex-shrink-0" style="background:#8B2635" id="profile-btn">
+        <span id="profile-initial">G</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search row (collapsible) -->
+  <div id="search-row" class="hidden px-4 pb-3">
+    <div class="search-bar">
+      <svg width="16" height="16" fill="none" stroke="#aaa" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" placeholder="Search dishes, cuisines…" id="search-input"
+             oninput="filterMenuBySearch(this.value)" />
+      <button onclick="clearSearch()" class="text-gray-400 text-lg leading-none">×</button>
+    </div>
+  </div>
+</header>
+
+<!-- Profile dropdown -->
+<div id="profile-menu" class="hidden fixed right-4 bg-white rounded-2xl shadow-xl z-50 w-52 py-2 border border-gray-100" style="top:64px">
+  <div class="px-4 py-3 border-b border-gray-100">
+    <p class="text-xs text-gray-400">Signed in as</p>
+    <p class="font-semibold text-sm truncate" id="profile-identifier" style="color:#1A1A1A">—</p>
+  </div>
+  <a href="admin.html" class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50">
+    <span>🧑‍💼</span> Admin Panel
+  </a>
+  <button onclick="Auth.logout()" class="w-full text-left flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50">
+    <span>🚪</span> Logout
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     HERO BANNER
+════════════════════════════════════════════ -->
+<section class="hero-gradient px-5 pt-7 pb-10 relative overflow-hidden">
+  <!-- Decorative circles -->
+  <div class="absolute -right-8 -top-8 w-40 h-40 rounded-full opacity-10" style="background:#D4A853"></div>
+  <div class="absolute right-4 top-4 w-16 h-16 rounded-full opacity-10" style="background:#D4A853"></div>
+
+  <p class="section-subtitle text-yellow-400 text-xs tracking-widest mb-2">✦ Hot &amp; Fresh Today</p>
+  <h2 class="font-playfair text-white text-3xl font-bold leading-tight mb-2">
+    Taste the<br>
+    <span style="color:#D4A853">Royal Flavours</span>
+  </h2>
+  <p class="text-gray-300 text-sm mb-5 leading-relaxed">
+    Authentic recipes · Fresh ingredients<br>Delivered to your doorstep
+  </p>
+
+  <!-- CTA row -->
+  <div class="flex gap-3">
+    <button class="btn-gold px-5 py-3 text-sm" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
+      🍽 Order Now
+    </button>
+    <div class="flex items-center gap-1.5 bg-white bg-opacity-10 rounded-full px-4 py-3">
+      <span class="text-yellow-400 text-sm">🕐</span>
+      <span class="text-white text-xs font-medium">25–35 min</span>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="flex gap-4 mt-6">
+    <div class="text-center">
+      <p class="text-white font-bold">4.8</p>
+      <p class="text-gray-400 text-xs">Rating</p>
+    </div>
+    <div class="w-px bg-white opacity-20"></div>
+    <div class="text-center">
+      <p class="text-white font-bold">2.5k+</p>
+      <p class="text-gray-400 text-xs">Orders</p>
+    </div>
+    <div class="w-px bg-white opacity-20"></div>
+    <div class="text-center">
+      <p class="text-white font-bold">30+</p>
+      <p class="text-gray-400 text-xs">Items</p>
+    </div>
+    <div class="w-px bg-white opacity-20"></div>
+    <div class="text-center">
+      <p style="color:#D4A853" class="font-bold">FREE</p>
+      <p class="text-gray-400 text-xs">Above ₹500</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     OFFERS STRIP
+════════════════════════════════════════════ -->
+<div class="overflow-x-auto scrollbar-hide px-4 py-3">
+  <div class="flex gap-3 w-max">
+    <div class="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-xl px-4 py-2 flex-shrink-0">
+      <span>🎉</span>
+      <p class="text-xs font-semibold text-yellow-800">50% OFF up to ₹100</p>
+    </div>
+    <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-4 py-2 flex-shrink-0">
+      <span>🚚</span>
+      <p class="text-xs font-semibold text-green-800">Free delivery above ₹500</p>
+    </div>
+    <div class="flex items-center gap-2 bg-purple-50 border border-purple-200 rounded-xl px-4 py-2 flex-shrink-0">
+      <span>⭐</span>
+      <p class="text-xs font-semibold text-purple-800">Rate &amp; win vouchers</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MENU SECTION
+════════════════════════════════════════════ -->
+<section class="px-4 pt-2 pb-4" id="menu-section">
+  <div class="flex items-center justify-between mb-3">
+    <div>
+      <p class="section-subtitle text-xs" style="color:#D4A853">Our Menu</p>
+      <h2 class="section-title text-xl">Choose Your Dish</h2>
+    </div>
+    <span class="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full" id="item-count-label">20 items</span>
+  </div>
+
+  <!-- Category filter pills -->
+  <div class="category-scroll mb-4" id="category-pills"></div>
+
+  <!-- Menu Grid -->
+  <div class="grid grid-cols-2 gap-3 food-grid" id="menu-grid">
+    <!-- Populated by JS -->
+    <div class="shimmer h-52 rounded-2xl col-span-1"></div>
+    <div class="shimmer h-52 rounded-2xl col-span-1"></div>
+    <div class="shimmer h-52 rounded-2xl col-span-1"></div>
+    <div class="shimmer h-52 rounded-2xl col-span-1"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     WHY CHOOSE US
+════════════════════════════════════════════ -->
+<section class="mx-4 mb-6 bg-white rounded-2xl p-5 shadow-sm">
+  <h3 class="font-playfair font-bold text-lg mb-4" style="color:#1A1A1A">Why Choose Us?</h3>
+  <div class="grid grid-cols-2 gap-3">
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">🍃</span>
+      <div>
+        <p class="text-xs font-semibold text-gray-700">Fresh Daily</p>
+        <p class="text-xs text-gray-400">Cooked fresh every day</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">⚡</span>
+      <div>
+        <p class="text-xs font-semibold text-gray-700">Fast Delivery</p>
+        <p class="text-xs text-gray-400">Under 35 minutes</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">👨‍🍳</span>
+      <div>
+        <p class="text-xs font-semibold text-gray-700">Master Chefs</p>
+        <p class="text-xs text-gray-400">15+ years experience</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-2xl">💰</span>
+      <div>
+        <p class="text-xs font-semibold text-gray-700">Best Value</p>
+        <p class="text-xs text-gray-400">Fair prices always</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     STICKY CART BAR
+════════════════════════════════════════════ -->
+<div class="sticky-cart-bar hidden" id="sticky-cart-bar"
+     onclick="openSheet('cart-sheet','cart-overlay')">
+  <div>
+    <p class="text-xs text-gray-300 mb-0.5">Your cart</p>
+    <p class="font-bold text-base bar-count">0 items</p>
+  </div>
+  <div class="flex items-center gap-2">
+    <p class="font-bold text-lg" style="color:#D4A853" class="bar-total">₹0</p>
+    <div class="bg-yellow-500 text-dark rounded-xl px-4 py-2 font-semibold text-sm bar-total" style="color:#1A1A1A">
+      View Cart →
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     CART BOTTOM SHEET
+════════════════════════════════════════════ -->
+<div class="bottom-sheet-overlay" id="cart-overlay" onclick="closeSheet('cart-sheet','cart-overlay')"></div>
+<div class="bottom-sheet" id="cart-sheet">
+  <div class="bottom-sheet-handle"></div>
+
+  <!-- Cart Header -->
+  <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+    <div>
+      <h3 class="font-semibold text-lg" style="color:#1A1A1A">Your Cart</h3>
+      <p class="text-xs text-gray-400">Spice Garden</p>
+    </div>
+    <button onclick="closeSheet('cart-sheet','cart-overlay')"
+            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 text-xl font-light">×</button>
+  </div>
+
+  <!-- Cart Items -->
+  <div class="px-5 py-2 max-h-64 overflow-y-auto" id="cart-sheet-list">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Totals -->
+  <div class="px-5 py-4 border-t border-gray-100 bg-gray-50">
+    <div class="flex justify-between items-center text-sm text-gray-500 mb-1.5">
+      <span>Subtotal</span>
+      <span font-semibold id="cart-subtotal">₹0</span>
+    </div>
+    <div class="flex justify-between items-center text-sm text-gray-500 mb-1.5">
+      <span>Delivery</span>
+      <span id="cart-delivery">₹40</span>
+    </div>
+    <div id="free-delivery-note" class="hidden text-xs text-green-600 bg-green-50 rounded-lg px-3 py-2 mb-2 text-center">
+      🎉 Free delivery applied!
+    </div>
+    <div class="flex justify-between items-center font-bold text-base border-t border-gray-200 pt-2.5 mt-1">
+      <span>Total</span>
+      <span style="color:#D4A853" id="cart-total">₹0</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="px-5 py-4">
+    <button class="btn-gold w-full py-4 text-base" onclick="goToCheckout()">
+      Proceed to Checkout →
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     BOTTOM NAVIGATION
+════════════════════════════════════════════ -->
+<nav class="bottom-nav">
+  <a href="index.html" class="bottom-nav-item active">
+    <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+    </svg>
+    <span>Home</span>
+  </a>
+  <button class="bottom-nav-item" onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+      <rect x="9" y="3" width="6" height="4" rx="2"/>
+    </svg>
+    <span>Menu</span>
+  </button>
+  <button class="bottom-nav-item relative" onclick="openSheet('cart-sheet','cart-overlay')">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <path d="M16 10a4 4 0 0 1-8 0"/>
+    </svg>
+    <span class="cart-count cart-badge" style="display:none;bottom:18px;right:8px;top:auto">0</span>
+    <span>Cart</span>
+  </button>
+  <a href="admin.html" class="bottom-nav-item">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    <span>Admin</span>
+  </a>
+</nav>
+
+<!-- Toast -->
+<div id="toast-container"></div>
+
+<script src="app.js"></script>
+<script>
+  // ── Auth guard ──
+  Auth.requireAuth();
+
+  // ── Setup profile ──
+  (function initProfile() {
+    const session = Auth.getSession();
+    if (!session) return;
+    const id = session.identifier || 'G';
+    document.getElementById('profile-identifier').textContent = id;
+    document.getElementById('profile-initial').textContent =
+      id === 'Guest' ? 'G' : id.replace('+91','').charAt(0).toUpperCase() || id.charAt(0).toUpperCase();
+  })();
+
+  // ── Build category pills ──
+  (function buildCategories() {
+    const container = document.getElementById('category-pills');
+    window._activeCategory = 'all';
+    container.innerHTML = CATEGORIES.map(c => `
+      <button class="category-pill${c.key === 'all' ? ' active' : ''}"
+              onclick="selectCategory('${c.key}', this)">
+        ${c.label}
+      </button>`).join('');
+  })();
+
+  function selectCategory(key, btn) {
+    window._activeCategory = key;
+    document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    // Clear search
+    const si = document.getElementById('search-input');
+    if (si) si.value = '';
+    renderMenu(key);
+    const count = key === 'all' ? MENU_ITEMS.length : MENU_ITEMS.filter(m => m.category === key).length;
+    document.getElementById('item-count-label').textContent = count + ' items';
+  }
+
+  // ── Render menu with shimmer removal ──
+  setTimeout(() => {
+    renderMenu('all');
+    updateCartBadges();
+  }, 300);
+
+  // ── Listen for cart updates ──
+  window.addEventListener('cartUpdated', () => {
+    updateCartBadges();
+    renderCartSheet();
+  });
+
+  // ── Open cart: render items ──
+  document.getElementById('cart-sheet').addEventListener('transitionend', () => {});
+  const origOpen = window.openSheet;
+  window.openSheet = function(sid, oid) {
+    if (sid === 'cart-sheet') renderCartSheet();
+    origOpen(sid, oid);
+  };
+
+  // ── Search toggle ──
+  function toggleSearch() {
+    const row = document.getElementById('search-row');
+    const hidden = row.classList.toggle('hidden');
+    if (!hidden) {
+      setTimeout(() => document.getElementById('search-input').focus(), 60);
+    }
+  }
+  function clearSearch() {
+    const si = document.getElementById('search-input');
+    si.value = '';
+    filterMenuBySearch('');
+    document.getElementById('search-row').classList.add('hidden');
+  }
+
+  // ── Profile menu toggle ──
+  function toggleProfileMenu() {
+    document.getElementById('profile-menu').classList.toggle('hidden');
+  }
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('profile-menu');
+    const btn  = document.getElementById('profile-btn');
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+
+  // ── Checkout nav ──
+  function goToCheckout() {
+    if (Cart.getCount() === 0) {
+      Toast.show('Add items to cart first!', 'error');
+      return;
+    }
+    closeSheet('cart-sheet', 'cart-overlay');
+    setTimeout(() => { window.location.href = 'checkout.html'; }, 300);
+  }
+</script>
+</body>
+</html>

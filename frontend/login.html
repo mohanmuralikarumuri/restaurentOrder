@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Login — Spice Garden</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Login-specific styles */
+    .login-hero {
+      background: linear-gradient(160deg, #1A1A1A 0%, #2D1810 55%, #8B2635 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 16px 64px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+    }
+    .login-card-header {
+      background: linear-gradient(135deg, #1A1A1A, #2D1810);
+      padding: 32px 28px 24px;
+      text-align: center;
+    }
+    .logo-ring {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #D4A853, #F0C97A);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px;
+      margin: 0 auto 14px;
+      box-shadow: 0 4px 20px rgba(212,168,83,0.5);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 10px;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: #888;
+      font-family: 'Poppins', sans-serif;
+    }
+    .tab-btn.active {
+      background: #fff;
+      color: #1A1A1A;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .tab-container {
+      background: #F3F4F6;
+      border-radius: 12px;
+      padding: 3px;
+      display: flex;
+    }
+    .step-indicator {
+      display: flex; align-items: center; gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #E5E7EB;
+      transition: all 0.3s;
+    }
+    .step-dot.active {
+      background: #D4A853;
+      width: 24px;
+      border-radius: 4px;
+    }
+    .step-dot.done { background: #16a34a; }
+  </style>
+</head>
+<body>
+<div class="login-hero">
+  <div class="login-card page-enter">
+
+    <!-- Card Header -->
+    <div class="login-card-header">
+      <div class="logo-ring">🍛</div>
+      <h1 class="font-playfair text-white text-2xl font-bold tracking-wide">Spice Garden</h1>
+      <p class="text-yellow-300 text-sm mt-1 font-poppins">Authentic Indian Cuisine</p>
+    </div>
+
+    <!-- Card Body -->
+    <div class="p-7">
+      <!-- Step indicators -->
+      <div class="step-indicator">
+        <div class="step-dot active" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+      </div>
+
+      <!-- ── STEP 1: Input form ── -->
+      <div id="step1">
+        <p class="text-center font-semibold mb-1" style="color:#1A1A1A;font-size:18px">Welcome Back! 👋</p>
+        <p class="text-center text-sm text-gray-400 mb-6">Login to start ordering</p>
+
+        <!-- Tabs -->
+        <div class="tab-container mb-5">
+          <button class="tab-btn active" id="tab-mobile" onclick="switchTab('mobile')">📱 Mobile</button>
+          <button class="tab-btn" id="tab-email"  onclick="switchTab('email')">📧 Email</button>
+        </div>
+
+        <!-- Mobile input -->
+        <div id="input-mobile">
+          <label class="block text-sm font-medium text-gray-600 mb-1.5">Mobile Number</label>
+          <div class="flex gap-2">
+            <div class="flex items-center px-3 py-3.5 rounded-xl border-2 border-gray-200 bg-gray-50 text-sm text-gray-600 font-medium flex-shrink-0">
+              🇮🇳 +91
+            </div>
+            <input id="mobileInput" type="tel" maxlength="10" inputmode="numeric"
+              placeholder="Enter 10-digit number"
+              class="input-field flex-1" oninput="clearErr('mobile-err')" />
+          </div>
+          <p id="mobile-err" class="text-red-500 text-xs mt-1.5 hidden"></p>
+        </div>
+
+        <!-- Email input -->
+        <div id="input-email" class="hidden">
+          <label class="block text-sm font-medium text-gray-600 mb-1.5">Email Address</label>
+          <input id="emailInput" type="email" inputmode="email"
+            placeholder="Enter your email address"
+            class="input-field" oninput="clearErr('email-err')" />
+          <p id="email-err" class="text-red-500 text-xs mt-1.5 hidden"></p>
+        </div>
+
+        <button class="btn-gold w-full py-4 mt-5 text-base"
+                style="font-size:15px" onclick="handleContinue()">
+          Continue →
+        </button>
+
+        <!-- Divider -->
+        <div class="divider-text my-5 text-xs">Quick access</div>
+
+        <!-- Guest mode -->
+        <button class="btn-outline-gold w-full py-3 text-sm" onclick="guestLogin()">
+          🚶 Continue as Guest
+        </button>
+
+        <p class="text-xs text-gray-400 text-center mt-5 leading-relaxed">
+          By continuing, you agree to our<br>
+          <span class="text-yellow-600 cursor-pointer">Terms of Service</span> &
+          <span class="text-yellow-600 cursor-pointer">Privacy Policy</span>
+        </p>
+      </div>
+
+      <!-- ── STEP 2: OTP Verification ── -->
+      <div id="step2" class="hidden">
+        <button onclick="goBack()" class="flex items-center gap-1 text-sm text-gray-400 mb-4 hover:text-gray-600 transition-colors">
+          ← Back
+        </button>
+
+        <p class="text-center font-semibold mb-1" style="color:#1A1A1A;font-size:18px">Verify OTP 🔐</p>
+        <p class="text-center text-sm text-gray-400 mb-2">6-digit code sent to</p>
+        <p class="text-center font-semibold text-sm mb-6" style="color:#D4A853" id="sent-to-display">
+          +91 XXXXXXXXXX
+        </p>
+
+        <!-- OTP boxes -->
+        <div class="flex gap-2.5 justify-center mb-2" id="otp-boxes">
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+          <input class="otp-input" type="text" maxlength="1" inputmode="numeric" />
+        </div>
+
+        <!-- Hint (demo only) -->
+        <p class="text-xs text-center text-green-600 bg-green-50 rounded-lg py-2 px-3 mb-4" id="otp-hint">
+          💡 Demo OTP: <span id="demo-otp" class="font-bold cursor-pointer underline" onclick="fillDemoOTP()">loading…</span>
+        </p>
+
+        <p id="otp-err" class="text-red-500 text-xs text-center mb-3 hidden"></p>
+
+        <button class="btn-gold w-full py-4 text-base" onclick="handleVerifyOTP()">
+          Verify & Login
+        </button>
+
+        <!-- Resend -->
+        <div class="text-center mt-4">
+          <p class="text-sm text-gray-400">Didn't receive OTP?
+            <span id="resend-btn" class="font-semibold cursor-pointer"
+              style="color:#D4A853" onclick="resendOTP()">Resend</span>
+          </p>
+          <p id="resend-timer" class="text-xs text-gray-400 mt-1"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script src="app.js"></script>
+<script>
+  // Redirect if already logged in
+  Auth.redirectIfLoggedIn();
+
+  let activeTab   = 'mobile';
+  let currentOTP  = '';
+  let resendTimer = null;
+
+  // ── Tab switching ──
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-mobile').classList.toggle('active', tab === 'mobile');
+    document.getElementById('tab-email').classList.toggle('active',  tab === 'email');
+    document.getElementById('input-mobile').classList.toggle('hidden', tab !== 'mobile');
+    document.getElementById('input-email').classList.toggle('hidden',  tab !== 'email');
+    clearErr('mobile-err');
+    clearErr('email-err');
+  }
+
+  // ── Validation & Continue ──
+  function handleContinue() {
+    const btn = event.target;
+    let identifier = '';
+
+    if (activeTab === 'mobile') {
+      const val = document.getElementById('mobileInput').value.trim();
+      if (!Validate.mobile(val)) {
+        showErr('mobile-err', 'Please enter a valid 10-digit Indian mobile number');
+        return;
+      }
+      identifier = '+91' + val;
+    } else {
+      const val = document.getElementById('emailInput').value.trim();
+      if (!Validate.email(val)) {
+        showErr('email-err', 'Please enter a valid email address');
+        return;
+      }
+      identifier = val;
+    }
+
+    // Loading state
+    btn.textContent = 'Sending OTP…';
+    btn.disabled    = true;
+
+    // Simulate network delay
+    setTimeout(() => {
+      currentOTP = Auth.generateOTP();
+      document.getElementById('demo-otp').textContent = currentOTP;
+      document.getElementById('sent-to-display').textContent = identifier;
+
+      // Store identifier for login
+      window._loginIdentifier = identifier;
+
+      // Switch to step 2
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+      document.getElementById('dot1').classList.remove('active');
+      document.getElementById('dot1').classList.add('done');
+      document.getElementById('dot2').classList.add('active');
+
+      // Focus first OTP box
+      document.querySelectorAll('.otp-input')[0].focus();
+
+      // Start resend timer
+      startResendTimer();
+
+      btn.textContent = 'Continue →';
+      btn.disabled    = false;
+    }, 900);
+  }
+
+  // ── OTP box auto-advance ──
+  document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((inp, idx) => {
+      inp.addEventListener('input', () => {
+        inp.value = inp.value.replace(/\D/g, '').slice(-1);
+        if (inp.value && idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+        }
+        // Auto verify when all 6 filled
+        const otp = [...inputs].map(i => i.value).join('');
+        if (otp.length === 6) handleVerifyOTP();
+      });
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !inp.value && idx > 0) {
+          inputs[idx - 1].focus();
+        }
+      });
+      inp.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+        paste.split('').forEach((ch, i) => {
+          if (inputs[i]) inputs[i].value = ch;
+        });
+        if (inputs[paste.length - 1]) inputs[paste.length - 1].focus();
+      });
+    });
+  });
+
+  function getEnteredOTP() {
+    return [...document.querySelectorAll('.otp-input')].map(i => i.value).join('');
+  }
+
+  function fillDemoOTP() {
+    const inputs = document.querySelectorAll('.otp-input');
+    currentOTP.split('').forEach((ch, i) => { if (inputs[i]) inputs[i].value = ch; });
+  }
+
+  // ── Verify OTP ──
+  function handleVerifyOTP() {
+    const entered = getEnteredOTP();
+    if (entered.length < 6) {
+      showErr('otp-err', 'Please enter all 6 digits');
+      return;
+    }
+    if (entered !== currentOTP) {
+      showErr('otp-err', 'Incorrect OTP. Try again.');
+      document.querySelectorAll('.otp-input').forEach(i => {
+        i.style.borderColor = '#dc2626';
+        setTimeout(() => i.style.borderColor = '', 1500);
+      });
+      return;
+    }
+
+    // Success
+    const btn = document.querySelector('#step2 .btn-gold');
+    btn.innerHTML = '<span class="spinner"></span>';
+    btn.disabled  = true;
+
+    setTimeout(() => {
+      Auth.login(window._loginIdentifier, activeTab);
+      Toast.show('🎉 Login successful! Welcome back!', 'success', 2000);
+      setTimeout(() => { window.location.href = 'index.html'; }, 700);
+    }, 800);
+  }
+
+  // ── Resend OTP ──
+  function resendOTP() {
+    currentOTP = Auth.generateOTP();
+    document.getElementById('demo-otp').textContent = currentOTP;
+    document.querySelectorAll('.otp-input').forEach(i => i.value = '');
+    document.querySelectorAll('.otp-input')[0].focus();
+    clearErr('otp-err');
+    Toast.show('OTP resent!', 'gold');
+    startResendTimer();
+  }
+
+  let timerInterval = null;
+  function startResendTimer() {
+    let secs = 30;
+    const timerEl = document.getElementById('resend-timer');
+    const btnEl   = document.getElementById('resend-btn');
+    btnEl.style.opacity = '0.4';
+    btnEl.style.pointerEvents = 'none';
+    clearInterval(timerInterval);
+    timerEl.textContent = `Resend in ${secs}s`;
+    timerInterval = setInterval(() => {
+      secs--;
+      timerEl.textContent = secs > 0 ? `Resend in ${secs}s` : '';
+      if (secs <= 0) {
+        clearInterval(timerInterval);
+        btnEl.style.opacity = '1';
+        btnEl.style.pointerEvents = 'auto';
+      }
+    }, 1000);
+  }
+
+  // ── Guest Login ──
+  function guestLogin() {
+    Auth.login('Guest', 'guest');
+    Toast.show('Browsing as guest 🚶', 'gold', 1500);
+    setTimeout(() => { window.location.href = 'index.html'; }, 600);
+  }
+
+  // ── Go back to step1 ──
+  function goBack() {
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('dot2').classList.remove('active');
+    document.getElementById('dot1').classList.remove('done');
+    document.getElementById('dot1').classList.add('active');
+    clearInterval(timerInterval);
+  }
+
+  // ── Error helpers ──
+  function showErr(id, msg) {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+  }
+  function clearErr(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  }
+</script>
+</body>
+</html>
